@@ -1,7 +1,7 @@
 '''
 Author: Jingwei Wu
 Date: 2024-11-27 16:07:38
-LastEditTime: 2024-11-29 21:53:08
+LastEditTime: 2024-12-01 17:35:43
 description: 
 '''
 import re
@@ -18,22 +18,23 @@ router = APIRouter()
 class ProductListResponse(BaseModel):
     product_id: str
     name: str
-    price: float
+    price: int
     image: str
     purchased_count: int
 
 class ProductDetailResponse(BaseModel):
     name: str
     description: str
-    price: float
+    price: int
     stock: int
     images: List[str]
     purchased_count: int
+    seller_id: str
 
 class ProductSearchResponse(BaseModel):
     product_id: str
     name: str
-    price: float
+    price: int
     images: List[str]
     purchased_count: int
 
@@ -59,7 +60,7 @@ async def get_product_list():
         {
             "product_id": str(product["_id"]),
             "name": product.get("name", ""),
-            "price": product.get("price", 0.0),
+            "price": product.get("price", 0),
             "image": product.get("image", ""),
             "purchased_count": product.get("purchased_count", 0)
         }
@@ -89,8 +90,9 @@ async def get_product_details(product_id: str):
         description=product["description"],
         price=product["price"],
         stock=product["stock"],
-        images=product["images"],
-        purchased_count=product["purchased_count"]
+        images=product["images", [""]][0],
+        purchased_count=product["purchased_count"],
+        seller_id=product["seller_id"]
     )
 
     return {

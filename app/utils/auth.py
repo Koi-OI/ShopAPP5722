@@ -1,7 +1,7 @@
 '''
 Author: Jingwei Wu
 Date: 2024-11-27 16:35:52
-LastEditTime: 2024-11-29 17:46:51
+LastEditTime: 2024-11-30 00:26:58
 description: 
 '''
 
@@ -73,15 +73,3 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
             status_code=status.HTTP_401_UNAUTHORIZED, 
             detail="Invalid token"
         )
-
-# def get_current_user(token: str = Depends()):
-#     """validate JWT and get info"""
-#     try:
-#         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-#         return payload
-#     except jwt.ExpiredSignatureError:
-#         raise HTTPException(status_code=HTTP_401_UNAUTHORIZED, detail="Token expired")
-#     except jwt.InvalidTokenError:
-#         raise HTTPException(status_code=HTTP_401_UNAUTHORIZED, detail="Invalid token")
-
-
