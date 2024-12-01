@@ -1,7 +1,7 @@
 '''
 Author: Jingwei Wu
 Date: 2024-11-27 16:07:38
-LastEditTime: 2024-12-01 17:41:17
+LastEditTime: 2024-12-01 18:28:50
 description: 
 '''
 import re
@@ -62,7 +62,7 @@ async def get_product_list():
             "product_id": str(product["_id"]),
             "name": product.get("name", ""),
             "price": product.get("price", 0),
-            "image": product.get("image", ""),
+            "image": product.get("image", [])[0] if product.get("image") else None,
             "purchased_count": product.get("purchased_count", 0)
         }
         for product in products
@@ -91,7 +91,7 @@ async def get_product_details(product_id: str):
         description=product["description"],
         price=product["price"],
         stock=product["stock"],
-        images=product["images", [""]][0],
+        images=product["images", []],
         purchased_count=product["purchased_count"],
         seller_id=product["seller_id"]
     )
@@ -134,7 +134,7 @@ async def search_products(name: str):
             "product_id": str(product["_id"]),  # MongoDB 的 _id 是 ObjectId，需要转换为字符串
             "name": product.get("name", ""),
             "price": product.get("price", 0.0),
-            "images": product.get("images", []),
+            "image": product.get("image", []),
             "purchased_count": product.get("purchased_count", 0)
         }
         for product in products
