@@ -1,7 +1,7 @@
 '''
 Author: Jingwei Wu
 Date: 2024-11-27 16:07:47
-LastEditTime: 2024-11-29 21:01:40
+LastEditTime: 2024-12-01 18:10:30
 description: 
 '''
 
@@ -11,6 +11,7 @@ from db.mongo import db
 from typing import List
 from pydantic import BaseModel
 from utils.auth import get_current_user
+from bson import ObjectId
 
 class CartItem(BaseModel):
     product_id: str
@@ -24,18 +25,12 @@ class OrderItemResponse(BaseModel):
     description: str
     quantity: int
     image: str
-    price: float
+    price: int
 
 class OrderResponse(BaseModel):
     items: List[OrderItemResponse]
 
 
-class OrderItemResponse(BaseModel):
-    name: str
-    description: str
-    price: float
-    quantity: int
-    image_url: str
 
 class AddressResponse(BaseModel):
     name: str
@@ -61,7 +56,7 @@ async def create_order(order: dict, user: dict = Depends(get_current_user)):
     if not cart_items:
         raise HTTPException(status_code=400, detail="Cart items are required")
 
-    total_price = 0.0
+    total_price = 0
     products = await db["products"].find({"_id": {"$in": [item["product_id"] for item in cart_items]}}).to_list(len(cart_items))
 
     # map products by id
@@ -151,8 +146,7 @@ async def get_order_details(order_id: str, user: dict = Depends(get_current_user
     """
     Get order details by order_id
     """
-    order = await db["orders"].find_one({"_id": order_id, "user_id": user["user_id"]})
-
+    order = await db["orders"].find_one({"_id": ObjectId(order_id), "user_id": user["user_id"]})
 
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")

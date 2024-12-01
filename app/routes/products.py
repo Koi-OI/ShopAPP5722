@@ -1,7 +1,7 @@
 '''
 Author: Jingwei Wu
 Date: 2024-11-27 16:07:38
-LastEditTime: 2024-12-01 17:35:43
+LastEditTime: 2024-12-01 17:41:17
 description: 
 '''
 import re
@@ -10,6 +10,7 @@ from db.mongo import db
 from typing import Optional
 from pydantic import BaseModel
 from typing import List
+from bson import ObjectId
 
 
 router = APIRouter()
@@ -80,7 +81,7 @@ async def get_product_details(product_id: str):
     Get product details by product_id
     """
 
-    product = await db["products"].find_one({"_id": product_id})
+    product = await db["products"].find_one({"_id": ObjectId(product_id)})
 
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
